@@ -5,34 +5,7 @@ from typing import Callable, Dict, Iterable, List, Optional
 
 import docx2txt
 
-
-def trim_string(
-    long_string: str,
-    center: int,
-    left_bound: int,
-    right_bound: int,
-) -> str:
-    """
-    Trim long sting.
-
-    Ex.: function with arguments ('I am too long to process', 2, 10, 10)
-    returns string 'I am too long'
-
-    Args:
-        long_string (str): long string to trim.
-        center (int): central character.
-        left_bound (int): amount of chars left from central character.
-        right_bound (int): amount of chars right from central character.
-
-    Returns:
-        str: trimmed string.
-
-    """
-    right_bound = center + right_bound + 1
-    left_bound = center - left_bound
-    left_bound = 0 if left_bound < 0 else left_bound
-
-    return long_string[left_bound:right_bound]
+import helpers
 
 
 def find_in_docx_file(search_word: str, filename: str) -> List[str]:
@@ -55,12 +28,16 @@ def find_in_docx_file(search_word: str, filename: str) -> List[str]:
 
     file_text: str = docx2txt.process(filename).replace('\xa0', '')
     text_lines: List[str] = file_text.split('\n')
+    line_bound: int = 24
 
     found_lines: List[str] = []
     for line in text_lines:
         if search_word in line:
-            line = trim_string(
-                line, line.index(search_word), 10, 10 + len(search_word),
+            line = helpers.trim_string(
+                line,
+                line.index(search_word),
+                line_bound,
+                line_bound + len(search_word),
             )
             found_lines.append(line)
 
@@ -100,7 +77,7 @@ def find_in_files(
 
     Args:
         search_word (str): word to search in files.
-        filenames (List[str]): list with names of files to search in.
+        filenames (Iterable[str]): list with names of files to search in.
 
     Returns:
         dict[str, List[str]: filename -> list with lines.
