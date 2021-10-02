@@ -2,33 +2,45 @@ import unittest
 
 from wordreader.scanner import find_in_files
 
-docx = 'tests/docx_test.docx'
-doc = 'tests/doc_test.doc'
-
+def get_name(extension: str):
+    return 'tests/{0}_test.{0}'.format(extension)
 
 class ScannerTest(unittest.TestCase):
     def test_basic_cases(self):
         self.assertEqual(find_in_files('', []), {})
         self.assertEqual(
-                find_in_files('', [1, 2, 3]), {'1': [], '2': [], '3': []}
+                find_in_files('', [1, 2, 3]), 
+                {'1': [], '2': [], '3': []},
             )
-        self.assertEqual(find_in_files('1', [doc]), find_in_files(1, [doc]))
+        self.assertEqual(
+                find_in_files('1', [get_name('doc')]), 
+                find_in_files(1, [get_name('doc')]),
+            )
 
     def test_different_formats(self):
+        search_result = ['Какой-то текст', 'Еще немного текста']
         target = {
-            doc: ['Какой-то текст', 'Еще немного текста'],
-            docx: ['Какой-то текст', 'Еще немного текста'],
+            get_name('doc'): search_result,
+            get_name('docx'): search_result,
+            get_name('txt'): search_result,
         }
-        self.assertEqual(find_in_files('текст', [doc, docx]), target)
+        self.assertEqual(
+                find_in_files('текст', target.keys()), 
+                target,
+            )
 
     def test_case_sensitive_search(self):
         target = {
-            doc: ['Еще немного текста'],
-            docx: ['Еще немного текста'],
+            get_name('doc'): ['Еще немного текста'],
+            get_name('docx'): ['Еще немного текста'],
         }
-        self.assertEqual(find_in_files('еще', [doc, docx]), {doc: [], docx: []})
         self.assertEqual(
-                find_in_files('еще', [doc, docx], case_sensitive=False), target
+                find_in_files('еще', target.keys()), 
+                { get_name('doc'): [], get_name('docx'): [] },
+            )
+        self.assertEqual(
+                find_in_files('еще', target.keys(), case_sensitive=False), 
+                target,
             )
 
 if __name__ == '__main__':

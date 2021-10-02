@@ -83,7 +83,7 @@ def split_txt_file(filename: str) -> List[str]:
     if not filename.endswith('.txt'):
         raise ValueError('File extension must be txt')
 
-    with open(filename, encoding='utf-8') as txt_file:
+    with open(filename, encoding='cp1251') as txt_file:
         # `read.split` is not the same as `readlines`
         # this is intentional
         return txt_file.read().split('\n')
