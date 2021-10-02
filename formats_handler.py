@@ -7,6 +7,7 @@ Supported formats:
     TODO:
     + pdf
     + txt
+
 """
 
 import os
@@ -68,8 +69,8 @@ def find_in_doc_file(search_word: str, filename: str) -> List[str]:
         return ['Не найден модуль для обработки .doc файлов']
 
     os.environ['HOME'] = '.'
-    # `filename` string is checked for validity in `find_in_single_file` func
-    stream = os.popen('{0} -m {1} {2}'.format(
+    # `filename` string is validated in `find_in_single_file` function
+    stream = os.popen('{0} -m {1} "{2}"'.format(
         r'.antiword\antiword.exe', 'cp1251', filename,
         ),
     )

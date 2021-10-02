@@ -21,7 +21,9 @@ def find_in_single_file(search_word: str, filename: str) -> List[str]:
     """
     file_extension: str = filename.split('.')[-1]
     file_handler: Optional[Callable] = getattr(
-        formats_handler, 'find_in_{0}_file'.format(file_extension),
+        formats_handler,
+        'find_in_{0}_file'.format(file_extension),
+        None,
     )
     found_lines: List[str] = []
 
