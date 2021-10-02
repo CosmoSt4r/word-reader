@@ -4,48 +4,47 @@ Module for processing files of specified formats.
 Supported formats:
     - doc
     - docx
-    TODO:
-    + pdf
-    + txt
 
 """
 
 import os
-from typing import List
+from typing import List, Optional
 
 import docx2txt
 
-from wordreader import helpers
 
-
-def find_in_text_lines(search_word: str, text_lines: List[str]) -> List[str]:
+def find_in_text_lines(
+    search_word: str,
+    text_lines: List[str],
+    case_sensitive: Optional[bool] = True,
+) -> List[str]:
     """
     Get all lines where given word is found.
 
     Args:
         search_word (str): word to search in lines.
         text_lines (List[str]): list with text lines.
+        case_sensitive (Optional[bool]): case sensitive search.
 
     Returns:
         List[str]: list with lines where word is found.
 
     """
-    line_bound: int = 24
     found_lines: List[str] = []
+    word_is_found: bool = False
 
     for line in text_lines:
-        if search_word in line:
-            line = helpers.trim_string(
-                line,
-                line.index(search_word),
-                line_bound,
-                line_bound + len(search_word),
-            )
+        if case_sensitive:
+            word_is_found = search_word in line
+        else:
+            word_is_found = search_word.lower() in line.lower()
+
+        if word_is_found:
             found_lines.append(line)
     return found_lines
 
 
-def find_in_doc_file(search_word: str, filename: str) -> List[str]:
+def split_doc_file(search_word: str, filename: str) -> List[str]:
     """
     Find specified word in doc (Word 2003 and older) file.
 
@@ -74,12 +73,12 @@ def find_in_doc_file(search_word: str, filename: str) -> List[str]:
         r'.antiword\antiword.exe', 'cp1251', filename,
         ),
     )
-    text_lines = stream.read().replace('[pic]', '').split('\n')
+    text_lines: List[str] = stream.read().replace('[pic]', '').split('\n')
 
-    return find_in_text_lines(search_word, text_lines)
+    return text_lines
 
 
-def find_in_docx_file(search_word: str, filename: str) -> List[str]:
+def split_docx_file(search_word: str, filename: str) -> List[str]:
     """
     Find specified word in docx (Word 2007 and newer) file.
 
@@ -99,4 +98,5 @@ def find_in_docx_file(search_word: str, filename: str) -> List[str]:
 
     file_text: str = docx2txt.process(filename).replace('\xa0', '')
     text_lines: List[str] = file_text.split('\n')
-    return find_in_text_lines(search_word, text_lines)
+
+    return text_lines
