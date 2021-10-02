@@ -3,7 +3,7 @@
 import os
 from typing import Callable, Dict, Iterable, List, Optional
 
-import formats_handler
+from wordreader import formats_handler
 
 
 def find_in_single_file(search_word: str, filename: str) -> List[str]:
@@ -47,6 +47,8 @@ def find_in_files(
         dict[str, List[str]: filename -> list with lines.
 
     """
+    search_word = str(search_word)
+    filenames = list(map(str, filenames))
     search_result: Dict[str, List[str]] = {}
     for filename in filenames:
         search_result[filename] = find_in_single_file(search_word, filename)

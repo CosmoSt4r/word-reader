@@ -15,7 +15,7 @@ from typing import List
 
 import docx2txt
 
-import helpers
+from wordreader import helpers
 
 
 def find_in_text_lines(search_word: str, text_lines: List[str]) -> List[str]:
