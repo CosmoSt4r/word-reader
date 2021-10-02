@@ -4,59 +4,28 @@ Module for processing files of specified formats.
 Supported formats:
     - doc
     - docx
+    - txt
 
 """
 
 import os
-from typing import List, Optional
+from typing import List
 
 import docx2txt
 
 
-def find_in_text_lines(
-    search_word: str,
-    text_lines: List[str],
-    case_sensitive: Optional[bool] = True,
-) -> List[str]:
+def split_doc_file(filename: str) -> List[str]:
     """
-    Get all lines where given word is found.
-
-    Args:
-        search_word (str): word to search in lines.
-        text_lines (List[str]): list with text lines.
-        case_sensitive (Optional[bool]): case sensitive search.
-
-    Returns:
-        List[str]: list with lines where word is found.
-
-    """
-    found_lines: List[str] = []
-    word_is_found: bool = False
-
-    for line in text_lines:
-        if case_sensitive:
-            word_is_found = search_word in line
-        else:
-            word_is_found = search_word.lower() in line.lower()
-
-        if word_is_found:
-            found_lines.append(line)
-    return found_lines
-
-
-def split_doc_file(search_word: str, filename: str) -> List[str]:
-    """
-    Find specified word in doc (Word 2003 and older) file.
+    Split text into lines in doc (Word 2003 and older) file.
 
     Security warning: it may be unsafe to feed user input into shell.
     Check the `filename` before calling the function (ex. os.path.exists)
 
     Args:
-        search_word (str): word to search in file.
-        filename (str): name of file to search in.
+        filename (str): name of file to process.
 
     Returns:
-        List[str]: list with lines where the word is found.
+        List[str]: list with lines of text.
 
     Raises:
         ValueError: file has extension other than doc.
@@ -73,21 +42,18 @@ def split_doc_file(search_word: str, filename: str) -> List[str]:
         r'.antiword\antiword.exe', 'cp1251', filename,
         ),
     )
-    text_lines: List[str] = stream.read().replace('[pic]', '').split('\n')
-
-    return text_lines
+    return stream.read().replace('[pic]', '').split('\n')
 
 
-def split_docx_file(search_word: str, filename: str) -> List[str]:
+def split_docx_file(filename: str) -> List[str]:
     """
-    Find specified word in docx (Word 2007 and newer) file.
+    Split text into lines in docx (Word 2007 and newer) file.
 
     Args:
-        search_word (str): word to search in file.
-        filename (str): name of file to search in.
+        filename (str): name of file to process.
 
     Returns:
-        List[str]: list with lines where the word is found.
+        List[str]: list with lines of text.
 
     Raises:
         ValueError: file has extension other than docx.
@@ -97,6 +63,27 @@ def split_docx_file(search_word: str, filename: str) -> List[str]:
         raise ValueError('File extension must be .docx')
 
     file_text: str = docx2txt.process(filename).replace('\xa0', '')
-    text_lines: List[str] = file_text.split('\n')
+    return file_text.split('\n')
 
-    return text_lines
+
+def split_txt_file(filename: str) -> List[str]:
+    """
+    Split text into lines in txt (Notepad) file.
+
+    Args:
+        filename (str): name of file to process.
+
+    Returns:
+        List[str]: list with lines of text.
+
+    Raises:
+        ValueError: file has extension other than txt.
+
+    """
+    if not filename.endswith('.txt'):
+        raise ValueError('File extension must be txt')
+
+    with open(filename, encoding='utf-8') as txt_file:
+        # `read.split` is not the same as `readlines`
+        # this is intentional
+        return txt_file.read().split('\n')

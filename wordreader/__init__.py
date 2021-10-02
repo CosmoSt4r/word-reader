@@ -1,5 +1,1 @@
-from . import (
-    scanner,
-    formats_handler,
-    helpers
-    )
+"""Package for searching words/phrases in text documents."""

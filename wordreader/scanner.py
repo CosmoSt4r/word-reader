@@ -3,7 +3,7 @@
 import os
 from typing import Callable, Dict, Iterable, List, Optional
 
-from wordreader import formats_handler
+from wordreader import formats_handler, strings_handler
 
 
 def find_in_single_file(
@@ -25,17 +25,16 @@ def find_in_single_file(
 
     """
     file_extension: str = filename.split('.')[-1]
-    file_handler: Optional[Callable] = getattr(
+    file_splitter: Optional[Callable] = getattr(
         formats_handler,
         'split_{0}_file'.format(file_extension),
         None,
     )
     found_lines: List[str] = []
 
-    if file_handler and os.path.exists(filename):
-        found_lines = file_handler(search_word, filename)
-        found_lines = formats_handler.find_in_text_lines(
-            search_word, found_lines, case_sensitive,
+    if file_splitter and os.path.exists(filename):
+        found_lines = strings_handler.find_in_text_lines(
+            search_word, file_splitter(filename), case_sensitive,
         )
 
     return found_lines
