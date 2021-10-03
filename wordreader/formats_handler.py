@@ -115,6 +115,7 @@ def split_pdf_file(filename: str) -> List[str]:
     text_lines: List[str] = []
     with pdfplumber.open(filename) as pdf:
         for page in pdf.pages:
-            page = page.extract_text().split('\n')
-            text_lines.extend(page)
+            page = page.extract_text()
+            if page:
+                text_lines.extend(page.split('\n'))
     return drop_empty_lines(text_lines)
