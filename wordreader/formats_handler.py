@@ -20,7 +20,6 @@ def split_doc_file(filename: str) -> List[str]:
     Split text into lines in doc (Word 2003 and older) file.
 
     Security warning: it may be unsafe to feed user input into shell.
-    Check the `filename` before calling the function (ex. os.path.exists)
 
     Args:
         filename (str): name of file to process.
@@ -34,11 +33,10 @@ def split_doc_file(filename: str) -> List[str]:
     """
     if not filename.endswith('.doc'):
         raise ValueError('File extension must be .doc')
-    if not os.path.exists('.antiword'):
-        return ['Не найден модуль для обработки .doc файлов']
+    if not (os.path.exists('.antiword') and os.path.exists(filename)):
+        return []
 
     os.environ['HOME'] = '.'
-    # `filename` string is validated in `find_in_single_file` function
     stream = Popen(
         [r'.antiword\antiword.exe', '-m', 'UTF-8', filename],
         shell=True,
