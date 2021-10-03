@@ -61,7 +61,10 @@ def find_in_files(
     filenames = list(map(str, filenames))
     search_result: Dict[str, List[str]] = {}
     for filename in filenames:
-        search_result[filename] = find_in_single_file(
-            search_word, filename, case_sensitive,
-        )
+        try:
+            search_result[filename] = find_in_single_file(
+                search_word, filename, case_sensitive,
+            )
+        except Exception:
+            search_result[filename] = []
     return search_result
