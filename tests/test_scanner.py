@@ -3,7 +3,7 @@ import unittest
 from wordreader.scanner import find_in_files
 
 def get_name(extension: str):
-    return 'tests/{0}_test.{0}'.format(extension)
+    return 'tests/documents/{0}_test.{0}'.format(extension)
 
 class ScannerTest(unittest.TestCase):
     def test_basic_cases(self):
