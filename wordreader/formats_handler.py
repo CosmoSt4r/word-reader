@@ -9,6 +9,7 @@ Supported formats:
 """
 
 import os
+from subprocess import PIPE, Popen
 from typing import List
 
 import docx2txt
@@ -38,11 +39,16 @@ def split_doc_file(filename: str) -> List[str]:
 
     os.environ['HOME'] = '.'
     # `filename` string is validated in `find_in_single_file` function
-    stream = os.popen('{0} -m {1} "{2}"'.format(
-        r'.antiword\antiword.exe', 'cp1251', filename,
-        ),
-    )
-    return stream.read().replace('[pic]', '').split('\n')
+    stream = Popen(
+        [r'.antiword\antiword.exe', '-m', 'UTF-8', filename],
+        shell=True,
+        stdout=PIPE,
+        stderr=PIPE,
+        stdin=PIPE,
+    ).communicate()[0]
+
+    text = stream.decode('utf-8').replace('[pic]', '')
+    return text.split('\n')
 
 
 def split_docx_file(filename: str) -> List[str]:

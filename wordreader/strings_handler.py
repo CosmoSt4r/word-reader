@@ -53,6 +53,7 @@ def find_in_text_lines(
     word_is_found: bool = False
 
     for line in text_lines:
+        line = line.strip()
         if case_sensitive:
             word_is_found = search_word in line
         else:
