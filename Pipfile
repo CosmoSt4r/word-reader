@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 docx2txt = "*"
+pdfplumber = "*"
 
 [dev-packages]
 

@@ -13,6 +13,7 @@ from subprocess import PIPE, Popen
 from typing import List
 
 import docx2txt
+import pdfplumber
 
 from wordreader.strings_handler import drop_empty_lines
 
@@ -92,3 +93,28 @@ def split_txt_file(filename: str) -> List[str]:
 
     with open(filename, encoding='cp1251') as txt_file:
         return drop_empty_lines(txt_file.readlines())
+
+
+def split_pdf_file(filename: str) -> List[str]:
+    """
+    Split text into lines in PDF (Adobe) file.
+
+    Args:
+        filename (str): name of file to process.
+
+    Returns:
+        List[str]: list with lines of text.
+
+    Raises:
+        ValueError: file has extension other than pdf.
+
+    """
+    if not filename.endswith('.pdf'):
+        raise ValueError('File extension must be pdf')
+
+    text_lines: List[str] = []
+    with pdfplumber.open(filename) as pdf:
+        for page in pdf.pages:
+            page = page.extract_text().split('\n')
+            text_lines.extend(page)
+    return drop_empty_lines(text_lines)

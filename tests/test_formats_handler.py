@@ -43,6 +43,17 @@ class FormatsHandlerTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             fh.split_txt_file('file.exe')
 
+    """ pdf """
+    def test_pdf_splitter(self):
+        splitted_text = fh.split_pdf_file(get_name('pdf'))
+
+        self.assertEqual(splitted_text[0], 'Какой-то текст')
+        self.assertEqual(splitted_text[-1], '1234567890')
+
+    def test_pdf_raises_error(self):
+        with self.assertRaises(ValueError):
+            fh.split_pdf_file('file.exe')
+
 
 if __name__ == '__main__':
     unittest.main()
