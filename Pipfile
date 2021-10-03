@@ -4,8 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-docx2txt = "*"
 pdfplumber = "*"
+pyqt5 = "*"
+docx2txt = "*"
 
 [dev-packages]
 
