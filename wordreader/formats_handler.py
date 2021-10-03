@@ -14,6 +14,8 @@ from typing import List
 
 import docx2txt
 
+from wordreader.strings_handler import drop_empty_lines
+
 
 def split_doc_file(filename: str) -> List[str]:
     """
@@ -29,12 +31,13 @@ def split_doc_file(filename: str) -> List[str]:
 
     Raises:
         ValueError: file has extension other than doc.
+        FileNotFoundError: if file or antiword not found.
 
     """
     if not filename.endswith('.doc'):
         raise ValueError('File extension must be .doc')
     if not (os.path.exists('.antiword') and os.path.exists(filename)):
-        return []
+        raise FileNotFoundError('Unable to process .doc file')
 
     os.environ['HOME'] = '.'
     stream = Popen(
@@ -46,7 +49,7 @@ def split_doc_file(filename: str) -> List[str]:
     ).communicate()[0]
 
     text = stream.decode('utf-8').replace('[pic]', '')
-    return text.split('\n')
+    return drop_empty_lines(text.split('\n'))
 
 
 def split_docx_file(filename: str) -> List[str]:
@@ -67,7 +70,7 @@ def split_docx_file(filename: str) -> List[str]:
         raise ValueError('File extension must be .docx')
 
     file_text: str = docx2txt.process(filename).replace('\xa0', '')
-    return file_text.split('\n')
+    return drop_empty_lines(file_text.split('\n'))
 
 
 def split_txt_file(filename: str) -> List[str]:
@@ -88,6 +91,4 @@ def split_txt_file(filename: str) -> List[str]:
         raise ValueError('File extension must be txt')
 
     with open(filename, encoding='cp1251') as txt_file:
-        # `read.split` is not the same as `readlines`
-        # this is intentional
-        return txt_file.read().split('\n')
+        return drop_empty_lines(txt_file.readlines())

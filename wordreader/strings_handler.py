@@ -32,6 +32,25 @@ def trim_string(
     return long_string[left_bound:right_bound]
 
 
+def drop_empty_lines(text_lines: List[str]) -> List[str]:
+    """
+    Drop empty lines and spaces around the line.
+
+    Args:
+        text_lines (List[str]): list with text lines.
+
+    Returns:
+        List[str]: given list without empty lines and spaces around them.
+
+    """
+    text_lines_without_spaces: List[str] = []
+    for line in text_lines:
+        line = line.strip()
+        if line:
+            text_lines_without_spaces.append(line)
+    return text_lines_without_spaces
+
+
 def find_in_text_lines(
     search_word: str,
     text_lines: List[str],
