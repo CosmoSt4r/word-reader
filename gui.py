@@ -20,7 +20,7 @@ class Ui_MainWindow(object):
         self.filenames = set()
 
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("Wordreader")
         MainWindow.resize(960, 540)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -102,11 +102,11 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.addFilesBtn.setText(_translate("MainWindow", "Добавить файлы"))
-        self.clearBtn.setText(_translate("MainWindow", "Очистить"))
-        self.searchBtn.setText(_translate("MainWindow", "Искать"))
-        self.caseSensitive.setText(_translate("MainWindow", "Соблюдать регистр"))
+        MainWindow.setWindowTitle(_translate("Wordreader", "Wordreader"))
+        self.addFilesBtn.setText(_translate("Wordreader", "Добавить файлы"))
+        self.clearBtn.setText(_translate("Wordreader", "Очистить"))
+        self.searchBtn.setText(_translate("Wordreader", "Искать"))
+        self.caseSensitive.setText(_translate("Wordreader", "Соблюдать регистр"))
 
     def search(self):
         search_word = self.searchLine.text()
